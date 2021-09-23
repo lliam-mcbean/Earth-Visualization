@@ -3,6 +3,12 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 
+
+// Location Data
+const vancouver = { 
+    lat: 49.2827,
+    long: 123.1207
+}
 /**
  * Debug
  */
@@ -41,10 +47,13 @@ const earth = new THREE.Mesh(
     new THREE.MeshStandardMaterial({
         normalMap: earthAmbient,
         displacementMap: earthDisplacement,
-        displacementScale: guiVariables.displacement,
+        displacementScale: 0.1,
         map: earthTexture
     })
 )
+earth.recieveShadow = true
+console.log(earth.material)
+gui.add(earth.material, 'displacementScale').min(0).max(1)
 scene.add(earth)
 
 const clouds = new THREE.Mesh(
@@ -55,13 +64,28 @@ const clouds = new THREE.Mesh(
         alphaMap: cloudsTreansparency
     })
 )
+clouds.castShadow = true
 scene.add(clouds)
+
+let x = Math.cos(vancouver.lat) * Math.cos(vancouver.long) * 3
+let y = Math.cos(vancouver.lat) * Math.sin(vancouver.long) * 3
+let z = Math.sin(vancouver.lat) * 3
+
+
 
 /**
  * Lights
  */
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.7)
 scene.add(ambientLight)
+
+const moonLight = new THREE.DirectionalLight('#ffffff', 0.5)
+moonLight.position.set(4, 5, - 2)
+gui.add(moonLight, 'intensity').min(0).max(1).step(0.001)
+gui.add(moonLight.position, 'x').min(- 5).max(5).step(0.001)
+gui.add(moonLight.position, 'y').min(- 5).max(5).step(0.001)
+gui.add(moonLight.position, 'z').min(- 5).max(5).step(0.001)
+scene.add(moonLight)
 
 /**
  * Sizes
