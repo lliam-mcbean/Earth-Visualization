@@ -9,15 +9,11 @@ const vancouver = {
     lat: 49.2827,
     long: 123.1207
 }
+
 /**
  * Debug
  */
 const gui = new dat.GUI()
-var guiVariables = {
-    displacement: 0.1
-}
-  
-gui.add(guiVariables, 'displacement').min(0).max(1)
 
 /**
  * Base
@@ -39,6 +35,7 @@ const earthAmbient = textureLoader.load('/textures/occulantearth.jpg')
 
 const cloudsTexture = textureLoader.load('/textures/clouds.jpg')
 const cloudsTreansparency = textureLoader.load('/textures/fairweather.jpeg')
+
 /**
  * Test sphere
  */
@@ -51,8 +48,8 @@ const earth = new THREE.Mesh(
         map: earthTexture
     })
 )
+earth.rotation.y =  - Math.PI / 2
 earth.recieveShadow = true
-console.log(earth.material)
 gui.add(earth.material, 'displacementScale').min(0).max(1)
 scene.add(earth)
 
@@ -71,7 +68,16 @@ let x = Math.cos(vancouver.lat) * Math.cos(vancouver.long) * 3
 let y = Math.cos(vancouver.lat) * Math.sin(vancouver.long) * 3
 let z = Math.sin(vancouver.lat) * 3
 
-
+const point = new THREE.Mesh(
+    new THREE.SphereGeometry(0.1, 32, 32),
+    new THREE.MeshBasicMaterial({
+        color: 0x00ff00
+    })
+)
+point.position.x = x
+point.position.y = y
+point.position.z = z
+scene.add(point)
 
 /**
  * Lights
@@ -115,7 +121,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(- 3, 3, 3)
+camera.position.z = 5
 scene.add(camera)
 
 // Controls
