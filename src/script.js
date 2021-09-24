@@ -6,8 +6,8 @@ import * as dat from 'dat.gui'
 
 // Location Data
 const vancouver = { 
-    lat: 49.2827,
-    long: 123.1207
+    lat: 49.2827 * (Math.PI / 180),
+    long: (360 - 123.1207) * (Math.PI / 180)
 }
 
 /**
@@ -64,9 +64,9 @@ const clouds = new THREE.Mesh(
 clouds.castShadow = true
 scene.add(clouds)
 
-let x = Math.cos(vancouver.lat) * Math.cos(vancouver.long) * 3
-let y = Math.cos(vancouver.lat) * Math.sin(vancouver.long) * 3
-let z = Math.sin(vancouver.lat) * 3
+let z = Math.cos(vancouver.lat) * Math.cos(vancouver.long) * 3
+let x = Math.cos(vancouver.lat) * Math.sin(vancouver.long) * 3
+let y = Math.sin(vancouver.lat) * 3
 
 const point = new THREE.Mesh(
     new THREE.SphereGeometry(0.1, 32, 32),
@@ -85,13 +85,19 @@ scene.add(point)
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.7)
 scene.add(ambientLight)
 
-const moonLight = new THREE.DirectionalLight('#ffffff', 0.5)
-moonLight.position.set(4, 5, - 2)
-gui.add(moonLight, 'intensity').min(0).max(1).step(0.001)
-gui.add(moonLight.position, 'x').min(- 5).max(5).step(0.001)
-gui.add(moonLight.position, 'y').min(- 5).max(5).step(0.001)
-gui.add(moonLight.position, 'z').min(- 5).max(5).step(0.001)
-scene.add(moonLight)
+const moonLight1 = new THREE.DirectionalLight('#ffffff', 0.3)
+moonLight1.position.set(4, 5, 5)
+
+const moonLight2 = new THREE.DirectionalLight('#ffffff', 0.3)
+moonLight2.position.set(-4, -5, -5)
+
+const moonLight3 = new THREE.DirectionalLight('#ffffff', 0.3)
+moonLight3.position.set(-4, -5, 5)
+
+const moonLight4 = new THREE.DirectionalLight('#ffffff', 0.3)
+moonLight4.position.set(4, -5, 5)
+
+scene.add(moonLight1, moonLight2, moonLight3, moonLight4)
 
 /**
  * Sizes
@@ -134,8 +140,6 @@ controls.enableDamping = true
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas
 })
-renderer.shadowMap.enabled = true
-renderer.shadowMap.type = THREE.PCFSoftShadowMap
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
